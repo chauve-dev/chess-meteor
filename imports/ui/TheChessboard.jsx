@@ -7,7 +7,7 @@ export default class TheChessboard extends React.Component {
             pieceTheme: 'chesspieces/wikipedia/{piece}.png',
             position: 'start'
           }
-          var board = Chessboard('myBoard', config)
+          var board = ChessBoard('myBoard', config)
     }
 
     render() {
