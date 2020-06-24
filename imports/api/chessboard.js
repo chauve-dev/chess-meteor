@@ -14,7 +14,10 @@ Meteor.methods({
     'move'({ source, target , piece , position }) {
         console.log(source,position,piece);
         var move = chess.move({from:source,to:target,promotion:"q"});
-        return move; // on va retourner la position avec uci engine
+        if(move != null){
+            return chess.fen()
+        }
+        return null;
     },
     'getBoard'({}){
         return chess.fen();

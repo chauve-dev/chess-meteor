@@ -39,7 +39,7 @@ export default class TheChessboard extends React.Component {
             } else {
                 console.log("Result's Move:",res);
                 if (res!=null){
-                    self.state.board.position(newPos);
+                    self.state.board.position(res);
                 }
             }
         });
@@ -63,6 +63,18 @@ export default class TheChessboard extends React.Component {
                 self.state.board = ChessBoard('myBoard', config);
             }
         });
+
+        setInterval(() => {
+            Meteor.call('getBoard', {}, (err, res) => {
+                if (err) {
+                    alert(err);
+                } else {
+                    if (self.state.board.fen().indexOf(res)==-1){
+                        self.state.board.position(res)
+                    }
+                }
+            });
+        }, 250);
     }
 
 
