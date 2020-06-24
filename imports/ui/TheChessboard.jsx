@@ -2,10 +2,32 @@ import React from 'react';
 
 export default class TheChessboard extends React.Component {
 
+    onDragStart (source, piece, position, orientation) {
+        console.log('Drag started:')
+        console.log('Source: ' + source)
+        console.log('Piece: ' + piece)
+        console.log('Position: ' + Chessboard.objToFen(position))
+        console.log('Orientation: ' + orientation)
+        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+      }
+
+    onDrop (source, target, piece, newPos, oldPos, orientation) {
+        console.log('Source: ' + source)
+        console.log('Target: ' + target)
+        console.log('Piece: ' + piece)
+        console.log('New position: ' + Chessboard.objToFen(newPos))
+        console.log('Old position: ' + Chessboard.objToFen(oldPos))
+        console.log('Orientation: ' + orientation)
+        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        return 'snapback'
+      }
+
     componentDidMount() {
         var config = {
-            pieceTheme: 'chesspieces/wikipedia/{piece}.png',
-            position: 'start'
+            draggable: true,
+            position: 'start',
+            onDragStart: this.onDragStart,
+            onDrop: this.onDrop
           }
           var board = ChessBoard('myBoard', config)
     }
