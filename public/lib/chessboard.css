@@ -1,0 +1,85 @@
+/*!
+ * chessboard.js v0.3.0
+ *
+ * Copyright 2013 Chris Oakman
+ * Released under the MIT license
+ * https://github.com/oakmac/chessboardjs/blob/master/LICENSE
+ *
+ * Date: 10 Aug 2013
+ */
+
+/* clearfix */
+.clearfix-7da63 {
+  clear: both;
+}
+
+/* board */
+.board-b72b1 {
+  border: 2px solid #404040;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+/* square */
+.square-55d63 {
+  float: left;
+  position: relative;
+
+  /* disable any native browser highlighting */
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+/* white square */
+.white-1e1d7 {
+ background-color: rgba(207,219,223,0.7); /*#ffe2C9;*/
+  color: #000;/* #e58b15;*/
+}
+
+/* black square */
+.black-3c85d {
+  background-color: rgba(13,77,97,0.7);/*#db5609;*/
+  color: #000;/*#fbb03b;*/
+}
+
+/* highlighted square */
+.highlight1-32417, .highlight2-9c5d2 {
+  -webkit-box-shadow: inset 0 0 3px 3px yellow;
+  -moz-box-shadow: inset 0 0 3px 3px yellow;
+  box-shadow: inset 0 0 3px 3px yellow;
+}
+
+.highlight-white {
+  -webkit-box-shadow: inset 0 0 3px 3px yellow;
+  -moz-box-shadow: inset 0 0 3px 3px yellow;
+  box-shadow: inset 0 0 3px 3px yellow;  
+}
+.highlight-black {
+  -webkit-box-shadow: inset 0 0 3px 3px blue;
+  -moz-box-shadow: inset 0 0 3px 3px blue;
+  box-shadow: inset 0 0 3px 3px blue;  
+}
+.highlight-red {
+  -webkit-box-shadow: inset 0 0 3px 3px red;
+  -moz-box-shadow: inset 0 0 3px 3px red;
+  box-shadow: inset 0 0 3px 3px red;  
+}
+/* notation */
+.notation-322f9 {
+  cursor: default;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  position: absolute;
+}
+.alpha-d2270 {
+  bottom: 1px;
+  right: 3px;
+}
+.numeric-fc462 {
+  top: 2px;
+  left: 2px;
+}
