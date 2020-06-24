@@ -7,6 +7,7 @@ export default class TheChessboard extends React.Component {
         this.state = { 
             board: null 
         };
+        this.onDrop = this.onDrop.bind(this);
     }
 
     onDragStart (source, piece, position, orientation) {
@@ -25,19 +26,43 @@ export default class TheChessboard extends React.Component {
         console.log('New position: ' + Chessboard.objToFen(newPos))
         console.log('Old position: ' + Chessboard.objToFen(oldPos))
         console.log('Orientation: ' + orientation)
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+        var self = this;
+        Meteor.call('move', {
+            source: source,
+            target: target,
+            piece: piece,
+            position:  Chessboard.objToFen(newPos),
+          }, (err, res) => {
+            if (err) {
+                alert(err);
+            } else {
+                console.log("Result's Move:",res);
+                if (res!=null){
+                    self.state.board.position(newPos);
+                }
+            }
+        });
         return 'snapback'
     }
 
     componentDidMount() {
-        var config = {
-            draggable: true,
-            position: 'start',
-            onDragStart: this.onDragStart,
-            onDrop: this.onDrop
-            }
 
-        this.state.board = ChessBoard('myBoard', config)
+
+        var self = this;
+        Meteor.call('getBoard', {}, (err, res) => {
+            if (err) {
+                alert(err);
+            } else {
+                var config = {
+                    draggable: true,
+                    position: res,
+                    onDragStart: self.onDragStart,
+                    onDrop: self.onDrop
+                };
+                self.state.board = ChessBoard('myBoard', config);
+            }
+        });
     }
 
 
