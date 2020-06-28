@@ -2,7 +2,7 @@ import React from 'react';
 import {
     withTracker
 } from 'meteor/react-meteor-data';
-import { Games } from '../api/Games';
+import { Games } from '../../api/Games';
 
 
 class TheChessboardUpdate extends React.Component{

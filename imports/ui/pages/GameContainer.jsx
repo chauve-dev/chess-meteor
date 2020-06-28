@@ -2,7 +2,7 @@ import React from 'react';
 import {
     withTracker
 } from 'meteor/react-meteor-data';
-import TheChessboardContainer from '../TheChessboard';
+import TheChessboardContainer from '../components/TheChessboard';
 import { Games } from '../../api/Games';
 
 
