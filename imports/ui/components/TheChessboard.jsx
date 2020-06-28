@@ -63,10 +63,12 @@ export default class TheChessboard extends React.Component {
 
         this.state = { 
             board: null,
-            game_id: props.id
+            game_id: props.id,
+            color: null
         };
         this.onDrop = this.onDrop.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
     }  
     
     onUpdate(game){
@@ -86,6 +88,10 @@ export default class TheChessboard extends React.Component {
         console.log('Position: ' + Chessboard.objToFen(position))
         console.log('Orientation: ' + orientation)
         console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+
+        if (!piece.startsWith(this.state.color)) {
+            return false
+        }
     }
 
     onDrop (source, target, piece, newPos, oldPos, orientation) {
@@ -126,6 +132,7 @@ export default class TheChessboard extends React.Component {
                 if (res.currentPlayer.color=="b"){
                     color="black";
                 }
+                self.setState({color: res.currentPlayer.color});
                 console.log(res);
                 var config = {
                     draggable: true,
