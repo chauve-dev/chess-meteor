@@ -36,5 +36,6 @@ Games.publicFields = {
     'timer-b': 1,
     'fen' : 1,
     'turn': 1,
-    'move': 1
+    'move': 1,
+    'name': 1
 };

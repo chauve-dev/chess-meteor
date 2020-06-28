@@ -40,7 +40,8 @@ class ChessPartie{
             'timer-b': this.timer_b,
             'fen': this.chess.fen(),
             'turn': this.chess.turn(),
-            'move': []
+            'move': [],
+            'name': this.nom
         });
     }
 
@@ -55,7 +56,8 @@ class ChessPartie{
             'timer-b': this.timer_b,
             'fen': fen,
             'turn': this.chess.turn(),
-            'move': []
+            'move': [],
+            'name': this.nom
         }
         console.log(this.chess.ascii());
         var self = this;

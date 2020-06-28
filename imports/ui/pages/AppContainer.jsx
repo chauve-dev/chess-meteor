@@ -3,6 +3,7 @@ import {
     withTracker
 } from 'meteor/react-meteor-data';
 import AccountsUIWrapper from '../AccountsUIWrapper';
+import GameListsTK from './GameList';
 
 
 class CoreRoot extends React.Component {
@@ -25,6 +26,7 @@ class CoreRoot extends React.Component {
                 main
             } 
             </section>
+            <GameListsTK />
             </div>
         )
     }

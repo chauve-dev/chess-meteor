@@ -9,6 +9,8 @@ import { Games } from '/imports/api/Games.js';
 
 
 Meteor.startup(() => {
-    var game = manager.addNewGame("test","normal");
-    console.log("http://localhost:80/games/"+game.uuid);
+    for (let i = 0; i < 100; i++) {
+        manager.addNewGame("game_"+i,"normal");
+        
+    }
 });
