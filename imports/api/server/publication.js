@@ -1,7 +1,7 @@
 
 import { Games } from '../Games';
 
-Meteor.publish('games.all', function(game_id) {
+Meteor.publish('games.all', function() {
     return Games.find({}, {
       fields: Games.publicFields
     });
