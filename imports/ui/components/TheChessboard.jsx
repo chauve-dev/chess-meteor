@@ -64,7 +64,8 @@ export default class TheChessboard extends React.Component {
         this.state = { 
             board: null,
             game_id: props.id,
-            color: null
+            color: null,
+            turn: ""
         };
         this.onDrop = this.onDrop.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
@@ -76,6 +77,7 @@ export default class TheChessboard extends React.Component {
         if (this.state.board!=null){
             console.log("FEN1:",game.fen);
             this.state.board.position(game.fen);
+            this.setState({turn: game.turn})
         }
         
     }
@@ -150,11 +152,15 @@ export default class TheChessboard extends React.Component {
 
 
     render() {
+        var turn = "C'est au blanc de jouer"
+        if(this.state.turn == "b"){
+            turn = "C'est au noir de jouer"
+        }
         return(
-            
             <div>
                 <UpdateTracker id={this.state.game_id}onUpdate={this.onUpdate}/>
                 <div id="myBoard" style={{width: "400px"}}></div>
+                <p>{turn}</p>
             </div>
         )
     }
