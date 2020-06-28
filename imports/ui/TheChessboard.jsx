@@ -115,8 +115,6 @@ export default class TheChessboard extends React.Component {
     }
 
     componentDidMount() {
-
-
         console.log("Load compoments");
         var self = this;
         Meteor.call('join', {game_id:this.state.game_id}, (err, res) => {

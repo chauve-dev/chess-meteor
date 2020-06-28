@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import {chess960} from './gametypes.js';
 import { Chess } from 'chess.js';
 import crypto from 'crypto'; 
@@ -124,10 +123,25 @@ Meteor.methods({
             return null;
         }
         var game = manager.getGamesWithID(game_id);
-        var move = game.chess.move({from:source,to:target,promotion:"q"});
-        if(move != null){
-            game.updateMongoDB(game.chess.fen());
-            return move;
+        //Recupération de la couleur du joueur
+        var color = null;
+        if (game.player_b!=null){
+            if (game.player_b.indexOf(this.userId)!=-1){
+                color="b";
+            }
+        }
+        if (game.player_w!=null){
+            if (game.player_w.indexOf(this.userId)!=-1){
+                color="w";
+            }
+        }
+        //Test si le joueur peux bouger cette piece (vérification du tour + si la pièce est à lui) 
+        if(game.chess.turn() == color && piece.startsWith(color)){
+            var move = game.chess.move({from:source,to:target,promotion:"q"});
+            if(move != null){
+                game.updateMongoDB(game.chess.fen());
+                return move;
+            }
         }
         return null;
     },
