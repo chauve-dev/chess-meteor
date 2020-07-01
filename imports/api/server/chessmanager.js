@@ -4,16 +4,8 @@ import crypto from 'crypto';
 import { Games } from '../Games';
 import './publication.js';
 
-
 Games.remove({});
 
-var count = Games.find({}, {
-    fields: Games.publicFields
-}).count();
-
-
-
-console.log("Games Found: ",count);
 
 class ChessPartie{
 
@@ -21,10 +13,17 @@ class ChessPartie{
         this.uuid = crypto.randomBytes(60).toString("hex");
         this.nom = nom;
         this.type=type;
+        this.playing = false;
+        this.wait_time = 30;
+        this.whitelist_b = null;
+        this.whitelist_w = null;
         this.player_w = null;
         this.player_b = null;
+        this.need_loop = true;
+        this.status = {type:"LOADING"};
         this.timer_w = 0;
         this.timer_b = 0;
+        this.move = [];
         this.chess = new Chess();
         if (type=="960"){
             chess960(this.chess);
@@ -34,6 +33,10 @@ class ChessPartie{
 
         Games.insert({
             'game-id': this.uuid,
+            'type': this.type,
+            'whitelist-b': this.whitelist_b,
+            'whitelist-w': this.whitelist_w,
+            'status': this.status,
             'player-w': this.timer_w,
             'player-b': this.timer_b,
             'timer-w': this.timer_w,
@@ -43,13 +46,67 @@ class ChessPartie{
             'move': [],
             'name': this.nom
         });
+
     }
 
+    onSecond(){
+        if (this.player_b!=null&&this.player_w!=null){
+            if ( this.playing==false){
+                if (this.wait_time>=1){
+                    this.wait_time = this.wait_time-1;
+                }else{
+                    this.playing=true;
+                    this.whitelist_b = this.player_b;
+                    this.whitelist_w = this.player_w;
+                }
+            }
+       
+        }
+        this.updateMongoDB(this.chess.fen());
+    }
     updateMongoDB(fen){
         var count = Games.find({ 'game-id': this.uuid}).count();
-        console.log("DB("+this.uuid+") > "+count);
+        //console.log("DB("+this.uuid+") > "+count);
+
+        var new_status = {type:"LOADING"};
+
+        if (this.chess.game_over()){
+            if (this.chess.in_checkmate()) {
+                new_status =  {type:"END",win:this.chess.turn()};
+            }else if (this.chess.in_draw()) {
+                new_status = {type:"END",win:"DRAW"};
+            }else {
+                new_status =  {type:"END",win:"OTHER"};
+            }
+           
+        }else{
+            if (this.playing==false){
+                var count = 0;
+                if (this.player_b!=null&&this.player_w!=null){
+                    new_status = {type:"STARTING",temps:this.wait_time};
+                }else{
+                    if (this.player_b!=null){
+                        count=count+1;
+                    }
+                    if (this.player_w!=null){
+                        count=count+1;
+                    }
+                    new_status = {type:"STARTING",actif:count,max:2};
+                }
+            }else{
+                
+                new_status = {type:"PLAYING",turn:this.chess.turn(),in_check:this.chess.in_check()};
+            }
+        }
+
+        this.status = new_status;
+
         var json = {
             'game-id': this.uuid,
+            'type': this.type,
+            'whitelist-b': this.whitelist_b,
+            'whitelist-w': this.whitelist_w,
+            'status': this.status,
             'player-w': this.player_w,
             'player-b': this.player_b,
             'timer-w': this.timer_w,
@@ -59,7 +116,7 @@ class ChessPartie{
             'move': [],
             'name': this.nom
         }
-        console.log(this.chess.ascii());
+        //console.log(this.chess.ascii());
         var self = this;
         Games.update({
             'game-id': this.uuid
@@ -87,6 +144,31 @@ class ChessManager{
 
     constructor(){
         this.games = [];
+        
+        var self = this;
+        this._loop = Meteor.setInterval(function(){
+            for (var k in self.games){
+                var game = self.games[k];
+                if (game.need_loop){
+                    game.onSecond();
+                }
+            }
+        },1000);
+    }
+    addGamefromSave(json){
+        var game = new ChessPartie(nom,type);
+        this.uuid = json['game-id'];
+        this.player_w = null;
+        this.player_b = null;
+        this.timer_w = json['timer-w'];
+        this.timer_b = json['timer-b'];
+        this.fen = json['fen'];
+        this.turn = json['turn'];
+        this.move = json['move'];
+        this.status = "";
+        this.whitelist_b = json['whitelist-b'];
+        this.whitelist_w = json['whitelist-w'];
+        this.nom = json['name'];
     }
     addNewGame(nom,type){
         var game = new ChessPartie(nom,type);
@@ -119,7 +201,7 @@ var manager = new ChessManager();
 Meteor.methods({
     'move'({ game_id,source, target , piece , position }) {
         if (this.userId==null){
-            return {error:"not_connected"};
+            return null;
         }
         if(manager.hasGamesWithID(game_id)==false){
             return null;
@@ -127,6 +209,9 @@ Meteor.methods({
         var game = manager.getGamesWithID(game_id);
         //Recupération de la couleur du joueur
         var color = null;
+        if (game.playing==false){
+            return null;
+        }
         if (game.player_b!=null){
             if (game.player_b.indexOf(this.userId)!=-1){
                 color="b";
@@ -179,11 +264,25 @@ Meteor.methods({
 
         if (color==null){
             if (game.player_w==null){
-                game.player_w =this.userId;
-                color="w";
+                if (game.whitelist_w!=null){
+                    if (game.whitelist_w.indexOf(this.userId)!=-1){
+                        game.player_w =this.userId;
+                        color="w";
+                    }
+                }else{
+                    game.player_w =this.userId;
+                    color="w";
+                }
             }else if (game.player_b==null){
-                game.player_b = this.userId;
-                color="b";
+                if (game.whitelist_b!=null){
+                    if (game.whitelist_b.indexOf(this.userId)!=-1){
+                        game.player_b =this.userId;
+                        color="b";
+                    }
+                }else{
+                    game.player_b =this.userId;
+                    color="b";
+                }
             }
         }
 
@@ -204,5 +303,8 @@ Meteor.methods({
         return game.uuid;
     }
 });
+
+
+
 
 module.exports = manager;

@@ -18,7 +18,7 @@ class TheChessboardUpdate extends React.Component{
         if (this.props.game.length<1){
             return (<div>{">"+this.props.gameExists}</div>);
         }else{
-            return (<div>{"FEN: "+this.props.game[0].fen}</div>);
+            return (<div>{"STATUS: "+JSON.stringify(this.props.game[0].status)}</div>);
         }
     }
 

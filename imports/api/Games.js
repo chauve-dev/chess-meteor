@@ -37,5 +37,7 @@ Games.publicFields = {
     'fen' : 1,
     'turn': 1,
     'move': 1,
-    'name': 1
+    'name': 1,
+    'status': 1,
+    'type': 1,
 };
