@@ -3,7 +3,8 @@ import {
     withTracker
 } from 'meteor/react-meteor-data';
 import AccountsUIWrapper from '../AccountsUIWrapper';
-import GameListsTK from './GameList';
+import GameListsTK from '../components/GameList';
+import GameCreation from '../components/GameCreation';
 
 
 class CoreRoot extends React.Component {
@@ -26,6 +27,7 @@ class CoreRoot extends React.Component {
                 main
             } 
             </section>
+            <GameCreation />
             <GameListsTK />
             </div>
         )
