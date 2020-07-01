@@ -1,8 +1,4 @@
 import React from 'react';
-import {
-    withTracker
-} from 'meteor/react-meteor-data';
-
 
 class GameCreation extends React.Component {
 
@@ -30,12 +26,13 @@ class GameCreation extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const self = this;
+        var self = this;
         Meteor.call('create', {nom: this.state.nom, type: this.state.type}, 
         (err, res) => {
-            if(err) return
-            if(!res) return
-            this.props.history.push("/"+res)
+            if(err) return;
+            if(!res) return;
+            console.log('/games/'+res)
+            window.location.href='/games/'+res
         });
       }
 
@@ -46,7 +43,7 @@ class GameCreation extends React.Component {
                     <label>Nom :
                     <input type="text" value={this.state.nom} onChange={this.handleName} />
                     </label>
-                    <label>Nom :
+                    <label>Type :
                     <input type="text" value={this.state.type} onChange={this.handleType} />
                     </label>
                     <input type="submit" value="Création de la partie" />
