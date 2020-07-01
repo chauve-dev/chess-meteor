@@ -192,6 +192,10 @@ Meteor.methods({
             'color':color
         };
         return result;
+    },
+    'create'(nom,type){
+        var game = manager.addNewGame(nom,type);
+        return game.uuid;
     }
 });
 
