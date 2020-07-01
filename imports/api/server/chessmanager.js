@@ -193,7 +193,13 @@ Meteor.methods({
         };
         return result;
     },
-    'create'(nom,type){
+    'create'({nom,type}){
+        if(type == undefined || type==""){
+            type = "classique"
+        }
+        if(nom.length == 0){
+            return false;
+        }
         var game = manager.addNewGame(nom,type);
         return game.uuid;
     }
