@@ -1,4 +1,6 @@
-const { Chess } = require('chess.js')
+
+
+
 function chess960Pos() {
     let pieces = ["r", "n", "b", "q", "k", "b", "n", "r"]
     let shuffled = pieces
